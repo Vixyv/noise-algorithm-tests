@@ -62,28 +62,28 @@ fig = plt.figure(1)
 plt.title("Executions over Time", fontsize="16")
 
 # Perlin 2D
-plt.scatter(perlin_2D[0], perlin_2D[1], color="red")
-z = np.polyfit(perlin_2D[0], perlin_2D[1], 1) # Trendline
+plt.scatter(perlin_2D[1], perlin_2D[0], color="red")
+z = np.polyfit(perlin_2D[1], perlin_2D[0], 1) # Trendline
 p = np.poly1d(z)
-plt.plot(perlin_2D[0], p(perlin_2D[0]),"r-")
+plt.plot(perlin_2D[1], p(perlin_2D[1]),"r-")
 
 # Perlin 2D
-plt.scatter(perlin_3D[0], perlin_3D[1], color="blue")
-z = np.polyfit(perlin_3D[0], perlin_3D[1], 1) # Trendline
+plt.scatter(perlin_3D[1], perlin_3D[0], color="blue")
+z = np.polyfit(perlin_3D[1], perlin_3D[0], 1) # Trendline
 p = np.poly1d(z)
-plt.plot(perlin_3D[0], p(perlin_3D[0]),"b-")
+plt.plot(perlin_3D[1], p(perlin_3D[1]),"b-")
 
 # Simplex 2D
-plt.scatter(simplex_2D[0], simplex_2D[1], color="green")
-z = np.polyfit(simplex_2D[0], simplex_2D[1], 1) # Trendline
+plt.scatter(simplex_2D[1], simplex_2D[0], color="green")
+z = np.polyfit(simplex_2D[1], simplex_2D[0], 1) # Trendline
 p = np.poly1d(z)
-plt.plot(simplex_2D[0], p(simplex_2D[0]),"g-")
+plt.plot(simplex_2D[1], p(simplex_2D[1]),"g-")
 
 # Simplex 3D
-plt.scatter(simplex_3D[0], simplex_3D[1], color="black")
-z = np.polyfit(simplex_3D[0], simplex_3D[1], 1) # Trendline
+plt.scatter(simplex_3D[1], simplex_3D[0], color="black")
+z = np.polyfit(simplex_3D[1], simplex_3D[0], 1) # Trendline
 p = np.poly1d(z)
-plt.plot(simplex_3D[0], p(simplex_3D[0]),"k-")
+plt.plot(simplex_3D[1], p(simplex_3D[1]),"k-")
 
 plt.legend(["P2D Red", "P3D Blue", "S2D Green", "S3D Black"])
 
