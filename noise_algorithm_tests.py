@@ -64,6 +64,3 @@ if __name__ == '__main__':
         raw_test_results.append(test_batch)
 
     export(raw_test_results)
-
-# Make a log log plot of the data (x = time allocated for executions, y = number of executions)
-# Don't average data here, do it in the processing file

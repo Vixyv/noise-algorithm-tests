@@ -85,7 +85,6 @@ z = np.polyfit(simplex_3D[0], simplex_3D[1], 1) # Trendline
 p = np.poly1d(z)
 plt.plot(simplex_3D[0], p(simplex_3D[0]),"k-")
 
-#"P2D Red\nP3D Blue\nS2D Yellow\nS3D Green"
 plt.legend(["P2D Red", "P3D Blue", "S2D Green", "S3D Black"])
 
 plt.xlabel("Time",fontsize="13")
