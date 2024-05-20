@@ -5,14 +5,7 @@ from time import perf_counter_ns
 from noise import pnoise2, pnoise3, snoise2, snoise3
 import json
 
-def export(raw_tr):
-    filename = "noise_results_" + time.strftime("%Y.%m.%d_%H.%M.%S", time.gmtime()) + ".txt"
-    f = open(filename, "w")
-    f.write(json.dumps(raw_tr))
-    f.close()
-
-
-# Random permuation arrays with 8193 elements each, used as inputs for noise algorithms, programatically generated
+# Random permuation lists with 8193 elements each, used as inputs for noise algorithms, programatically generated
 X_COORDS = [i for i in range(8193)]
 Y_COORDS = [i for i in range(8193)]
 Z_COORDS = [i for i in range(8193)]
@@ -26,7 +19,7 @@ def test_speed(func, run_time):
 
     time_start = perf_counter_ns()
     while perf_counter_ns() < time_start + run_time:
-        # The bitwise & operator prevents accessing a number past the array length
+        # The bitwise & operator prevents accessing a number past the list length
         func(X_COORDS[execs & 8192], Y_COORDS[execs & 8192], Z_COORDS[execs & 8192])
         execs += 1
     return [execs, perf_counter_ns() - time_start] # Num of excecutions per microsecond
@@ -39,8 +32,15 @@ def simplex_3D(x, y, z): snoise3(x, y, z)
 
 functions = [perlin_2D, perlin_3D, simplex_2D, simplex_3D]
 
+def export(raw_tr):
+    filename = "noise_results_" + time.strftime("%Y.%m.%d_%H.%M.%S", time.gmtime()) + ".txt"
+    f = open(filename, "w")
+    f.write(json.dumps(raw_tr))
+    f.close()
+
+
 if __name__ == '__main__':
-    # Procedurally suffles coord const arrays
+    # Procedurally suffles coord const lists
     random.Random(0).shuffle(X_COORDS)
     random.Random(1).shuffle(Y_COORDS)
     random.Random(2).shuffle(Z_COORDS)
@@ -50,17 +50,15 @@ if __name__ == '__main__':
 
     for f in functions:
         # Contains run times for one algorithm
-        test_batch = []
+        test = [[], [], [], []]
 
-        for n in range(100):
-            test = []
+        for n in range(75):
+            test[0].append(test_speed(f, 0.001)) # 1 Millisecond
+            test[1].append(test_speed(f, 0.01))  # 1 Centisecond
+            test[2].append(test_speed(f, 0.1))   # 1 Decisecond
+            test[3].append(test_speed(f, 1))     # 1 Second
+            test[3].append(test_speed(f, 1))     # 1 Second (ran twice to gather more data)
 
-            test.append(test_speed(f, 0.001)) # 1 Millisecond
-            test.append(test_speed(f, 0.01))  # 1 Centisecond
-            test.append(test_speed(f, 0.1))   # 1 Decisecond
-            test.append(test_speed(f, 1))     # 1 Second
-
-            test_batch.append(test)
-        raw_test_results.append(test_batch)
+        raw_test_results.append(test)
 
     export(raw_test_results)
