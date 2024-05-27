@@ -22,7 +22,7 @@ def test_speed(func, run_time):
         # The bitwise & operator prevents accessing a number past the list length
         func(X_COORDS[execs & 8192], Y_COORDS[execs & 8192], Z_COORDS[execs & 8192])
         execs += 1
-    return [execs, perf_counter_ns() - time_start] # Num of excecutions per microsecond
+    return [execs, perf_counter_ns() - time_start] # Num of excecutions per nanosecond
 
 # Noise algorithms
 def perlin_2D(x, y, _z): pnoise2(x, y)
