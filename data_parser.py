@@ -40,8 +40,6 @@ def parse_data(raw_data):
 
     return [pln_2D, pln_3D, spx_2D, spx_3D]
 
-# TODO: Fix trendline
-
 if __name__ == '__main__':
     func_types = parse_data(import_data_merged()) # Imports and parses all raw data in PATH_TO_DATA
     colours = ["red", "orange", "blue", "cyan"]
@@ -51,20 +49,19 @@ if __name__ == '__main__':
 
     # Function data
     for (func, colour, marker) in zip(func_types, colours, markers):
-        graph = plt.gca()
         for func_ti in func:
-            graph.scatter(func_ti[0], func_ti[1], color=colour, marker=marker) # Exec's over time
-        graph.set_yscale("log")
-        graph.set_xscale("log")
+            plt.loglog(func_ti[0], func_ti[1], color=colour, marker=marker) # Exec's over time
+        # graph.set_yscale("log")
+        # graph.set_xscale("log")
 
     # Trendline
     for func in func_types:
         time_data = [func[0][0], func[1][0], func[2][0], func[3][0]]
         exec_data = [func[0][1], func[1][1], func[2][1], func[3][1]]
 
-        z = np.polyfit(np.log10(time_data), np.log10(exec_data), 1)
-        p = np.poly1d(z)
-        plt.plot(time_data, p(time_data))
+        z = np.polyfit(time_data, exec_data, 2)
+        p = np.polyval(z, time_data)
+        plt.loglog(time_data, p)
 
     # Legend configuration
     legend_elements = [mpl.lines.Line2D([0], [0], marker="o", color="red", label="Perlin 2D", markersize=7, linewidth=0),
