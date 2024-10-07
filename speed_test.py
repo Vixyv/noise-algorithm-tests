@@ -1,9 +1,9 @@
 # Lib: https://pypi.org/project/noise/ | Github: https://github.com/caseman/noise/tree/master
+import json
 import random
 import time
 from time import perf_counter_ns
 from noise import pnoise2, pnoise3, snoise2, snoise3
-import json
 
 # Random permuation lists with 8193 elements each, used as inputs for noise algorithms, programatically generated
 X_COORDS = [i for i in range(8193)]

@@ -1,61 +1,76 @@
 from noise import pnoise2, snoise2
-from scipy.signal import welch
 from random import random, randint
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-def generate_noise(func, resolution, scale):
-    rand_x = randint(0, 2^12) + random()
-    rand_y = randint(0, 2^12) + random()
-    return np.array([[func(rand_x+(x/scale), rand_y+(y/scale)) for x in range(resolution)] for y in range(resolution)])
+def generate_noise(noise_func, resolution, scale):
+    rand_x = randint(0, 2^12)
+    rand_y = randint(0, 2^12)
+    return np.array([[noise_func(rand_x+(x/scale), rand_y+(y/scale)) for x in range(resolution)] for y in range(resolution)])
 
-def main():
-    # Parameters
-    resolution = 4096
-    scale = 10
-
-    # Generate Perlin noise
-    perlin_noise = generate_noise(pnoise2, resolution, scale)
-    # simplex_noise = generate_noise(snoise2, resolution, scale)
-
-    k = 64
-    m = int(np.cbrt(resolution/k))
-
+# Computes Bartlett's power spectrum estimation for a 2D signal (assumes the 2D signal is a square)
+def bartlett_2d(signal, k):
     periodograms = []
 
-    for x in range(int(np.cbrt(k))):
-        for y in range(int(np.cbrt(k))):
-            # Gets a slice
-            subsection = perlin_noise[m*x+1::m*(x+1), m*y+1::m*(x+1)]
-            periodograms.append(compute_periodogram(subsection, m))
+    k_1d = int(np.sqrt(k)) # Makes k (the number of subsections) 1D
+    m = int(len(signal)/k) # Length of each subsection of the signal
+
+    # Divides the signal into subsections and computes a peridogram for each subsection
+    for y in range(k_1d):
+        for x in range(k_1d):
+            subsection = slice_2d(signal, (m*x, m*(x+1)-1),  (m*y, m*(y+1)-1))
+            periodograms.append(compute_periodogram(subsection))
     
-    average = np.zeros(shape=(1024, 1023))
+    # Averages peridograms
+    power_spectrum = np.zeros((m, m))
 
-    for periodogram in periodograms:
-        average += periodogram
+    for pdg in periodograms:
+        power_spectrum += pdg
+    
+    return power_spectrum / k
 
-    average = average/len(periodograms)
-    plot_data(average)
+# Returns a subslice of a 2D list (inclusive of start and end indices)
+def slice_2d(matrix, x_slice: tuple[int, int], y_slice: tuple[int, int]):
+    x_start, x_end = x_slice
+    y_start, y_end = y_slice
 
-def compute_periodogram(noise, m):
+    list_slice = []
+
+    for y in range(y_end - y_start + 1):
+        list_slice.append([])
+        for x in range(x_end - x_start + 1):
+            list_slice[y].append(matrix[y + y_start][x + x_start])
+    
+    return list_slice
+            
+def compute_periodogram(noise):
     # Compute the 2D FFT of the noise
     fft_result = np.fft.fft2(noise)
     fft_shifted = np.fft.fftshift(fft_result)  # Shift zero frequency components to center
     power_spectrum = np.abs(fft_shifted)**2  # Calculate power spectrum
 
-    return power_spectrum/m
+    return normalize_2d(power_spectrum)
+
+def normalize_2d(matrix):
+    norm = np.linalg.norm(matrix)
+    matrix = matrix / norm 
+    return matrix
 
 def plot_data(power_spectrum):
-    # Plotting
     plt.figure()
 
-    # Power Spectrum
-    plt.title("Power Spectrum")
-    plt.imshow(power_spectrum * 2, cmap='hot')
+    plt.imshow(power_spectrum, cmap='gray')
     plt.axis('off')
 
-    # plt.tight_layout()
+    plt.title("Power Spectrum")
+    plt.savefig("power_spectrum.svg")
     plt.show()
 
-main()
+
+
+if __name__ == '__main__':
+    # simplex_noise = generate_noise(snoise2, resolution, scale)
+
+    perlin_noise = generate_noise(pnoise2, 20000, 2)
+    plot_data(bartlett_2d(perlin_noise, 500))

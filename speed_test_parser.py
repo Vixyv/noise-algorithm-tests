@@ -11,7 +11,7 @@ def import_data_merged():
 
     # Loops through files
     for data_file in os.listdir(PATH_TO_DATA):
-        data = json.load(open(PATH_TO_DATA + data_file, "r")) # Data of one file
+        data = json.load(open(PATH_TO_DATA + data_file, 'r')) # Data of one file
 
         # Loops through data and appends it to merged_data
         for (func, m_func) in zip(data, merged_data):
@@ -44,8 +44,8 @@ def parse_data(raw_data):
 
 if __name__ == '__main__':
     func_types = parse_data(import_data_merged()) # Imports and parses all raw data in PATH_TO_DATA
-    colours = ["red", "orange", "blue", "cyan"]
-    markers = ["o", "^", "o", "^"]
+    colours = ['red', 'orange', 'blue', 'cyan']
+    markers = ['o', '^', 'o', '^']
 
     fig = plt.figure(1)
 
@@ -68,18 +68,18 @@ if __name__ == '__main__':
         plt.loglog(time_data, p)
 
     # Legend configuration
-    legend_elements = [mpl.lines.Line2D([0], [0], marker="o", color="red", label="Perlin 2D", markersize=7, linewidth=0),
-                    mpl.lines.Line2D([0], [0], marker="^", color="orange", label="Perlin 3D", markersize=7, linewidth=0),
-                    mpl.lines.Line2D([0], [0], marker="o", color="blue", label="Simplex 2D", markersize=7, linewidth=0),
-                    mpl.lines.Line2D([0], [0], marker="^", color="cyan", label="Simplex 3D", markersize=7, linewidth=0)]
+    legend_elements = [mpl.lines.Line2D([0], [0], marker='o', color='red', label='Perlin 2D', markersize=7, linewidth=0),
+                    mpl.lines.Line2D([0], [0], marker='^', color='orange', label='Perlin 3D', markersize=7, linewidth=0),
+                    mpl.lines.Line2D([0], [0], marker='o', color='blue', label='Simplex 2D', markersize=7, linewidth=0),
+                    mpl.lines.Line2D([0], [0], marker='^', color='cyan', label='Simplex 3D', markersize=7, linewidth=0)]
 
     plt.legend(handles=legend_elements)
 
     # Graph configuration
-    plt.title("Executions over Time", fontsize="16")
-    plt.xlabel("Time (Nanoseconds)", fontsize="13")
-    plt.ylabel("Executions", fontsize="13")
-    plt.savefig("figure_1.svg")
+    plt.title("Executions over Time", fontsize='16')
+    plt.xlabel("Time (Nanoseconds)", fontsize='13')
+    plt.ylabel("Executions", fontsize='13')
+    plt.savefig("speed_scatter_plot.svg")
     plt.grid()
     plt.show()
 
@@ -87,13 +87,13 @@ if __name__ == '__main__':
     fig = plt.figure(2)
 
     # Times are converted from nanosecond to second
-    plt.bar(["Perlin 2D"], [func_types[0][3][2] * 10**9], color ="red", width = 0.4)
-    plt.bar(["Perlin 3D"], [func_types[1][3][2] * 10**9], color ="orange", width = 0.4)
-    plt.bar(["Simplex 2D"], [func_types[2][3][2] * 10**9], color ="blue", width = 0.4)
-    plt.bar(["Simplex 3D"], [func_types[3][3][2] * 10**9], color ="cyan", width = 0.4)
+    plt.bar(["Perlin 2D"], [func_types[0][3][2] * 10**9], color ='red', width = 0.4)
+    plt.bar(["Perlin 3D"], [func_types[1][3][2] * 10**9], color ='orange', width = 0.4)
+    plt.bar(["Simplex 2D"], [func_types[2][3][2] * 10**9], color ='blue', width = 0.4)
+    plt.bar(["Simplex 3D"], [func_types[3][3][2] * 10**9], color ='cyan', width = 0.4)
 
     # Graph configuration
-    plt.title("Execution times of Algorithms", fontsize="16")
-    plt.ylabel("Executions per Second", fontsize="13")
-    plt.savefig("figure_2.svg")
+    plt.title("Execution times of Algorithms", fontsize='16')
+    plt.ylabel("Executions per Second", fontsize='13')
+    plt.savefig("speed_bargraph.svg")
     plt.show()
